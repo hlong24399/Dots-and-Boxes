@@ -1,0 +1,100 @@
+#include <sfml/Graphics.hpp>
+#include <sfml/Window.hpp>
+#include <sfml/Main.hpp>
+#include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <ctime>
+using namespace sf;
+/*int main()
+{
+	Window window(VideoMode(800,500), " LALALALALALALLALALALA", Style::Default);
+	window.setPosition(Vector2i(800, 300));
+
+	Clock clock;     //time elapse track
+	while (window.isOpen()) {			//Open the window by while-loop
+		Event event;
+		while (window.pollEvent(event)) {		//pollEvent will be true if event is pending and vice versa
+			if (Keyboard::isKeyPressed(Keyboard::F) && Keyboard::isKeyPressed(Keyboard::A)) 
+				{ window.close(); } //This may be how to close app with key combination Idk
+//			Mouse::setPosition(Vector2i(400, 200), window);
+			switch (event.type) {
+			case Event::Closed:
+				window.close();			//"close" we close the window
+				break;
+			case Event::KeyPressed:
+				if (event.key.code == Keyboard::Escape) cout << " Pressed" << endl;
+				break;
+			case Event::MouseWheelScrolled:
+				if (event.mouseWheelScroll.wheel == Mouse::VerticalWheel)
+					cout << " Mousewheel used " << event.mouseWheel.y << endl;
+				break;
+			case Event::TextEntered:
+				cout << static_cast<char>(event.text.unicode) << endl;
+				break;
+			case Event::KeyReleased:
+				if (event.key.code == Keyboard::Escape) cout << " Released" << endl;
+				break;
+			case Event::MouseButtonPressed:
+				if (event.mouseButton.button == Mouse::Left) cout << " Left button pressed" << endl;
+				if (event.mouseButton.button == Mouse::Right) cout << " Right button pressed" << endl;
+				if (event.mouseButton.button == Mouse::Middle) cout << " Wheel pressed" << endl;
+				if (event.mouseButton.button == Mouse::XButton1) cout << " Side1 pressed " << endl;
+				if (event.mouseButton.button == Mouse::XButton2) cout << " Side2 pressed " << endl;
+				break;
+			case Event::MouseButtonReleased:
+				if (event.mouseButton.button == Mouse::Left) cout << " Left button released" << endl;
+				if (event.mouseButton.button == Mouse::Right) cout << " Right button released" << endl;
+				if (event.mouseButton.button == Mouse::Middle) cout << " Wheel released" << endl;
+				if (event.mouseButton.button == Mouse::XButton1) cout << " Side1 released " << endl;
+				if (event.mouseButton.button == Mouse::XButton2) cout << " Side2 released " << endl;
+				break;
+			case Event::MouseMoved:
+				cout << event.mouseMove.x << "  " << event.mouseMove.y << endl;
+				break;
+			case Event::MouseLeft:
+				cout << " The cursor is out " << endl;
+				break;
+			case Event::MouseEntered:
+				cout << " The cursor is in " << endl;
+				break;
+			}
+		}
+	}
+	
+	std::cout << " Time elapse is : " << clock.getElapsedTime().asSeconds();
+	return 0;
+}*/
+int main() {
+	int pos_x = 800, pos_y = 600;
+	RenderWindow window(VideoMode(1600,1200), " Drawing Something ", Style::Fullscreen);
+	Texture texture;
+	srand(time(NULL));
+	if (!texture.loadFromFile("Texture2.jpg")) { std::cout << " Error " << std::endl; }
+	Sprite sprite(texture);
+	sprite.setPosition(Vector2f(800, 600));
+	sprite.setTextureRect(IntRect(300, 400, 200, 300));
+	sprite.setOrigin(Vector2f(100, 150));
+	sprite.setColor(Color::Yellow);
+	while (window.isOpen()) {
+		Event event;
+		
+		int ran_r = rand() % 255 + 1;
+		int ran_g = rand() % 255 + 1;
+		int ran_b = rand() % 255 + 1;
+		sprite.setColor(Color(ran_r, ran_g, ran_b, 255));
+		sprite.setPosition(Vector2f(rand() % 1600, rand() % 1200));
+		sprite.rotate(0.09f);
+		while (window.pollEvent(event)) {
+			switch (event.type) {
+			case Event::Closed:
+				window.close();
+				break;
+			}
+		}
+		window.clear(Color::Black);
+		window.draw(sprite);
+		window.display();
+	}
+	return 0;
+}
