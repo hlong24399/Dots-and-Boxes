@@ -3,6 +3,7 @@
 #include <sfml/Main.hpp>
 #include <iostream>
 #include <iomanip>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 using namespace sf;
@@ -67,24 +68,23 @@ using namespace sf;
 }*/
 int main() {
 	int pos_x = 800, pos_y = 600;
-	RenderWindow window(VideoMode(1600,1200), " Drawing Something ", Style::Fullscreen);
+	int counter = 0;
+	RenderWindow window(VideoMode(1600,1200), " Drawing Something ", Style::Default);
 	Texture texture;
 	srand(time(NULL));
 	if (!texture.loadFromFile("Texture2.jpg")) { std::cout << " Error " << std::endl; }
-	Sprite sprite(texture);
-	sprite.setPosition(Vector2f(800, 600));
+	std::vector<Sprite>sprite(5);
+	/*sprite.setPosition(Vector2f(800, 600));
 	sprite.setTextureRect(IntRect(300, 400, 200, 300));
-	sprite.setOrigin(Vector2f(100, 150));
-	sprite.setColor(Color::Yellow);
+	sprite.setOrigin(Vector2f(100, 150));*/
 	while (window.isOpen()) {
+		for (int i = 1; i < 5; i++) {
+			sprite[i].setPosition(Vector2f(200 * i, 300 * i));
+			sprite[i].setTextureRect(IntRect(300, 400, 200, 300));
+			sprite[i].setOrigin(Vector2f(100, 150));
+			std::cout << " In the loop " << i << std::endl;
+		}
 		Event event;
-		
-		int ran_r = rand() % 255 + 1;
-		int ran_g = rand() % 255 + 1;
-		int ran_b = rand() % 255 + 1;
-		sprite.setColor(Color(ran_r, ran_g, ran_b, 255));
-		sprite.setPosition(Vector2f(rand() % 1600, rand() % 1200));
-		sprite.rotate(0.09f);
 		while (window.pollEvent(event)) {
 			switch (event.type) {
 			case Event::Closed:
@@ -92,8 +92,10 @@ int main() {
 				break;
 			}
 		}
-		window.clear(Color::Black);
-		window.draw(sprite);
+		window.clear();
+		for (int t = 0; t < 5; t++) {
+			window.draw(sprite[t]);
+		}
 		window.display();
 	}
 	return 0;
