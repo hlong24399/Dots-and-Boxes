@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 using namespace sf;
 /*int main()
 {
@@ -16,7 +17,7 @@ using namespace sf;
 	while (window.isOpen()) {			//Open the window by while-loop
 		Event event;
 		while (window.pollEvent(event)) {		//pollEvent will be true if event is pending and vice versa
-			if (Keyboard::isKeyPressed(Keyboard::F) && Keyboard::isKeyPressed(Keyboard::A)) 
+			if (Keyboard::isKeyPressed(Keyboard::F) && Keyboard::isKeyPressed(Keyboard::A))
 				{ window.close(); } //This may be how to close app with key combination Idk
 //			Mouse::setPosition(Vector2i(400, 200), window);
 			switch (event.type) {
@@ -62,41 +63,60 @@ using namespace sf;
 			}
 		}
 	}
-	
+
 	std::cout << " Time elapse is : " << clock.getElapsedTime().asSeconds();
 	return 0;
 }*/
 int main() {
-	int pos_x = 800, pos_y = 600;
-	int counter = 0;
-	RenderWindow window(VideoMode(1600,1200), " Drawing Something ", Style::Default);
-	Texture texture;
-	srand(time(NULL));
-	if (!texture.loadFromFile("Texture2.jpg")) { std::cout << " Error " << std::endl; }
-	std::vector<Sprite>sprite(5);
-	/*sprite.setPosition(Vector2f(800, 600));
-	sprite.setTextureRect(IntRect(300, 400, 200, 300));
-	sprite.setOrigin(Vector2f(100, 150));*/
+	//circle.setFillColor(Color(140,45,22,255));
+	const int screen_x = 1040;
+	const int screen_y = 1040;
+	RenderWindow window(VideoMode(screen_x,screen_y), " Dots and Boxes ", Style::Default);
+	window.setFramerateLimit(144);
+	int edge{};
+	std::cout << " Enter the number of dots you want on an edge: ";
+	//std::cin >> edge;
+	edge = 5;
+	std::vector<CircleShape>circle(edge*edge);
 	while (window.isOpen()) {
-		for (int i = 1; i < 5; i++) {
-			sprite[i].setPosition(Vector2f(200 * i, 300 * i));
-			sprite[i].setTextureRect(IntRect(300, 400, 200, 300));
-			sprite[i].setOrigin(Vector2f(100, 150));
-			std::cout << " In the loop " << i << std::endl;
-		}
 		Event event;
+		//Print those dots----------------------------------------------
+		for (int i = 0; i < edge * edge; i++) {
+			circle[i].setRadius(15);
+			circle[i].setPosition((40.f + (i % edge) * screen_x / edge), (40.f + (i / edge) * screen_y / edge));
+			circle[i].setFillColor(Color::Red);
+			circle[i].setOrigin(1, 1);
+		}
+		//Print those line--------------------------------------------
+		std::vector<RectangleShape>h_line(edge * edge - edge+1);
+		std::vector<RectangleShape>v_line(edge * edge - edge+1);
+		for (int i = 0; i < edge * edge - edge; i++) {
+			h_line[i].setSize(Vector2f(200, 30));
+			h_line[i].setFillColor(Color(64, 50, 0, 100));
+			h_line[i].setPosition((40.f + (i % edge) * screen_x / edge), (40.f + (i / edge) * screen_y / edge));
+		}
+		//h_line[z].setSize(Vector2f(200, 30));
+//h_line[z].setFillColor(Color(64, 50, 0, 100));
+//h_line[z].setPosition((40.f + (z % edge) * screen_x / edge), (40.f + (z / edge) * screen_y / edge));
 		while (window.pollEvent(event)) {
-			switch (event.type) {
-			case Event::Closed:
+			if (event.type == Event::Closed) {
 				window.close();
-				break;
 			}
 		}
-		window.clear();
-		for (int t = 0; t < 5; t++) {
-			window.draw(sprite[t]);
+		window.clear(Color::White);
+		for (int t = 0; t < edge*edge; t++) {
+			window.draw(circle[t]);			
+			window.draw(h_line[t]);
 		}
 		window.display();
 	}
+
+
+
+
+
+
+
+
 	return 0;
 }
