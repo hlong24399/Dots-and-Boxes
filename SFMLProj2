@@ -8,115 +8,97 @@
 #include <ctime>
 #include <cmath>
 using namespace sf;
-/*int main()
-{
-	Window window(VideoMode(800,500), " LALALALALALALLALALALA", Style::Default);
-	window.setPosition(Vector2i(800, 300));
-
-	Clock clock;     //time elapse track
-	while (window.isOpen()) {			//Open the window by while-loop
-		Event event;
-		while (window.pollEvent(event)) {		//pollEvent will be true if event is pending and vice versa
-			if (Keyboard::isKeyPressed(Keyboard::F) && Keyboard::isKeyPressed(Keyboard::A))
-				{ window.close(); } //This may be how to close app with key combination Idk
-//			Mouse::setPosition(Vector2i(400, 200), window);
-			switch (event.type) {
-			case Event::Closed:
-				window.close();			//"close" we close the window
-				break;
-			case Event::KeyPressed:
-				if (event.key.code == Keyboard::Escape) cout << " Pressed" << endl;
-				break;
-			case Event::MouseWheelScrolled:
-				if (event.mouseWheelScroll.wheel == Mouse::VerticalWheel)
-					cout << " Mousewheel used " << event.mouseWheel.y << endl;
-				break;
-			case Event::TextEntered:
-				cout << static_cast<char>(event.text.unicode) << endl;
-				break;
-			case Event::KeyReleased:
-				if (event.key.code == Keyboard::Escape) cout << " Released" << endl;
-				break;
-			case Event::MouseButtonPressed:
-				if (event.mouseButton.button == Mouse::Left) cout << " Left button pressed" << endl;
-				if (event.mouseButton.button == Mouse::Right) cout << " Right button pressed" << endl;
-				if (event.mouseButton.button == Mouse::Middle) cout << " Wheel pressed" << endl;
-				if (event.mouseButton.button == Mouse::XButton1) cout << " Side1 pressed " << endl;
-				if (event.mouseButton.button == Mouse::XButton2) cout << " Side2 pressed " << endl;
-				break;
-			case Event::MouseButtonReleased:
-				if (event.mouseButton.button == Mouse::Left) cout << " Left button released" << endl;
-				if (event.mouseButton.button == Mouse::Right) cout << " Right button released" << endl;
-				if (event.mouseButton.button == Mouse::Middle) cout << " Wheel released" << endl;
-				if (event.mouseButton.button == Mouse::XButton1) cout << " Side1 released " << endl;
-				if (event.mouseButton.button == Mouse::XButton2) cout << " Side2 released " << endl;
-				break;
-			case Event::MouseMoved:
-				cout << event.mouseMove.x << "  " << event.mouseMove.y << endl;
-				break;
-			case Event::MouseLeft:
-				cout << " The cursor is out " << endl;
-				break;
-			case Event::MouseEntered:
-				cout << " The cursor is in " << endl;
-				break;
-			}
+const int screen_x = 1000;
+const int screen_y = 1000;
+class Board {
+private:
+	std::vector<CircleShape>circle;
+public:
+	Board(int size) { //Create grid
+		CircleShape aCircle;
+		//Print those dots----------------------------------------------
+		for (int i = 0; i < size * size; i++) {
+			circle.push_back(aCircle);
+			circle[i].setRadius(10);
+			circle[i].setPosition((40.f + (i % size) * screen_x / size), (40.f + (i / size) * screen_y / size));
+			circle[i].setFillColor(Color::Red);
+			circle[i].setOrigin(5, 5);	
+			
 		}
 	}
-
-	std::cout << " Time elapse is : " << clock.getElapsedTime().asSeconds();
-	return 0;
-}*/
+	friend class ConnectLine;
+	std::vector<CircleShape> getCircle() { //return vector of dots
+		return circle;
+	}
+};
+//class ConnectLine {
+//private:
+//	
+//public:
+//	static std::vector<Vertex>vertex;
+//	ConnectLine(Vector2i pos) {
+//		Vertex aVertex;
+//		aVertex.position = static_cast<Vector2f>(pos);
+//		vertex.push_back(aVertex);
+//	}
+//	static std::vector<Vertex> get2Vertex() {
+//		return vertex;
+//	}
+//};
 int main() {
-	//circle.setFillColor(Color(140,45,22,255));
-	const int screen_x = 1040;
-	const int screen_y = 1040;
+	
 	RenderWindow window(VideoMode(screen_x,screen_y), " Dots and Boxes ", Style::Default);
 	window.setFramerateLimit(144);
 	int edge{};
+	
 	std::cout << " Enter the number of dots you want on an edge: ";
 	//std::cin >> edge;
 	edge = 5;
-	std::vector<CircleShape>circle(edge*edge);
+	VertexArray vertex(Lines, 10000);
+	int INDEX{};
 	while (window.isOpen()) {
 		Event event;
-		//Print those dots----------------------------------------------
-		for (int i = 0; i < edge * edge; i++) {
-			circle[i].setRadius(15);
-			circle[i].setPosition((40.f + (i % edge) * screen_x / edge), (40.f + (i / edge) * screen_y / edge));
-			circle[i].setFillColor(Color::Red);
-			circle[i].setOrigin(1, 1);
-		}
-		//Print those line--------------------------------------------
-		std::vector<RectangleShape>h_line(edge * edge - edge+1);
-		std::vector<RectangleShape>v_line(edge * edge - edge+1);
-		for (int i = 0; i < edge * edge - edge; i++) {
-			h_line[i].setSize(Vector2f(200, 30));
-			h_line[i].setFillColor(Color(64, 50, 0, 100));
-			h_line[i].setPosition((40.f + (i % edge) * screen_x / edge), (40.f + (i / edge) * screen_y / edge));
-		}
-		//h_line[z].setSize(Vector2f(200, 30));
-//h_line[z].setFillColor(Color(64, 50, 0, 100));
-//h_line[z].setPosition((40.f + (z % edge) * screen_x / edge), (40.f + (z / edge) * screen_y / edge));
+		/////////////////////////Get mouse position on window---------------------
+		Vector2i pos = Mouse::getPosition(window);
+		/////////////////Print those dots----------------------------------------------
+		Board board(edge);
+		/////////////////Print those line--------------------------------------------
 		while (window.pollEvent(event)) {
-			if (event.type == Event::Closed) {
+			
+			if (event.type == Event::Closed)
 				window.close();
+			/////////////////////Select the dot---------------------------------------------------
+			if (event.type == Event::MouseButtonPressed) {
+				if (event.key.code == Mouse::Left) {
+					for (auto t : board.getCircle()) {
+						if (t.getGlobalBounds().contains(pos.x, pos.y)) { //Need a function to create a vertex when this happens
+							std::cout << " YO ";
+							vertex[INDEX].position = t.getPosition(); //Create a Vertex
+							vertex[INDEX].color = Color::Black;
+							INDEX++;
+						}
+					}
+				}
 			}
+				if (event.type == Event::MouseButtonReleased) {
+					if (event.key.code == Mouse::Left) {
+						for (auto t : board.getCircle()) {
+							if (t.getGlobalBounds().contains(pos.x, pos.y)) {
+								std::cout << " Yay " << std::endl;
+								vertex[INDEX].position = t.getPosition();  //Create a Vertex
+								vertex[INDEX].color = Color::Black;
+								INDEX++;
+							}
+						}
+					}
+				}
 		}
 		window.clear(Color::White);
-		for (int t = 0; t < edge*edge; t++) {
-			window.draw(circle[t]);			
-			window.draw(h_line[t]);
+		for ( auto i : board.getCircle()) {
+			window.draw(i);			
 		}
+		window.draw(vertex);
 		window.display();
 	}
-
-
-
-
-
-
-
-
 	return 0;
 }
