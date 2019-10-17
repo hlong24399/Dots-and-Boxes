@@ -8,14 +8,25 @@ struct Choice {
 	int a;
 	int b;
 };
+struct PropOfAnB {
+	int sum;
+	int product;
+};
+
 class Board {
-public:
-	std::vector<CircleShape>circle;
-	std::vector<Choice>choice;
-public:
+	
+public: //////Variable
+	int a{}, b{}, size{}, totalLines;
+	std::vector<CircleShape>circle; /////Save Circle
+	std::vector<Choice>choice; /////Save Choice
+	std::vector<PropOfAnB>selectedLines; /////Save sum and product to validate
+	VertexArray vertex;	
+public: /////////Func
+
 	Board(int size);
-public:
-	std::vector<CircleShape> getCircle();//return vector of dots
-	void setChoice(int a, int b);
-	void PrintChoice();
+	void LineSelect(); ///input Choice
+	void printLine(); //Print choice
+	bool notValid(int a, int b, int size);
+	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);
+	VertexArray drawLines(int i);
 };
