@@ -1,4 +1,5 @@
 #include "Board.h"
+#include <iostream>
 //Create grid
 Board::Board(int size) {
 	CircleShape aCircle;
@@ -14,4 +15,17 @@ Board::Board(int size) {
 }
 std::vector<CircleShape> Board::getCircle() {        //return vector of dots
 	return circle;
-	}
+}
+
+void Board::setChoice(int a, int b)
+{
+	Choice aChoice;
+	aChoice.a = a;
+	aChoice.b = b;
+	choice.push_back(aChoice);
+}
+
+void Board::PrintChoice()
+{
+	for (auto i : choice) std::cout << i.a << " ---------- " << i.b << std::endl;
+}
