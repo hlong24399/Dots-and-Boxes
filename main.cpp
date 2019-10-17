@@ -1,104 +1,69 @@
 #include <sfml/Graphics.hpp>
-#include <sfml/Window.hpp>
-#include <sfml/Main.hpp>
 #include <iostream>
-#include <iomanip>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
+#include "Board.h"
 #include <cmath>
 using namespace sf;
-const int screen_x = 1000;
-const int screen_y = 1000;
-class Board {
-private:
-	std::vector<CircleShape>circle;
-public:
-	Board(int size) { //Create grid
-		CircleShape aCircle;
-		//Print those dots----------------------------------------------
-		for (int i = 0; i < size * size; i++) {
-			circle.push_back(aCircle);
-			circle[i].setRadius(10);
-			circle[i].setPosition((40.f + (i % size) * screen_x / size), (40.f + (i / size) * screen_y / size));
-			circle[i].setFillColor(Color::Red);
-			circle[i].setOrigin(5, 5);	
-			
-		}
-	}
-	friend class ConnectLine;
-	std::vector<CircleShape> getCircle() { //return vector of dots
-		return circle;
-	}
+bool notValid(int a, int b, int size) {
+	if ((abs(b - a) == size || (abs(b - a) == 1 && std::max(a,b) % size != 0)) && (a < size * size && b < size * size) )	return false;
+	std::cout << " Not Valid " << std::endl;
+	return true;
+}
+struct PropOfAnB {
+	int sum;
+	int product;
 };
-//class ConnectLine {
-//private:
-//	
-//public:
-//	static std::vector<Vertex>vertex;
-//	ConnectLine(Vector2i pos) {
-//		Vertex aVertex;
-//		aVertex.position = static_cast<Vector2f>(pos);
-//		vertex.push_back(aVertex);
-//	}
-//	static std::vector<Vertex> get2Vertex() {
-//		return vertex;
-//	}
-//};
+bool isTaken(int a, int b, std::vector<PropOfAnB>inputStore) {
+	bool SumValid = false, ProductValid = false;
+	for (auto i : inputStore) {
+		if ((a * b) == i.product && (a + b) == i.sum) return true;
+	}
+	return false; //Have to be false
+}
+
+
 int main() {
 	
 	RenderWindow window(VideoMode(screen_x,screen_y), " Dots and Boxes ", Style::Default);
+	window.setPosition(Vector2i(1440,1440));
 	window.setFramerateLimit(144);
-	int edge{};
-	
+	int edge{}, a{}, b{}, product{}, sum{};
 	std::cout << " Enter the number of dots you want on an edge: ";
-	//std::cin >> edge;
-	edge = 5;
-	VertexArray vertex(Lines, 10000);
-	int INDEX{};
+	//std::cin >> edge; ////Input length of edge
+	edge = 3;
+	const int totalLines = 2 * (edge * edge - edge); //////total num of lines
+	std::cout << " Here is total line " << totalLines << std::endl; //////printout totalLines
+	std::vector<PropOfAnB>selectedLines(totalLines);
+	Board board(edge); /////////////////Print those dots----------------------------------------------
+	int i{};
 	while (window.isOpen()) {
+		
+		//for (int i = 0; i < totalLines; i++) { ///////PlayerSelection..................
+			std::cout << " \n Select the dot that you want to connect: ";
+			std::cin >> a >> b;
+			while ((notValid(a, b, edge)) || (isTaken(a, b, selectedLines))) { ////Validation
+					std::cout << " Wrong input " << std::endl;
+					std::cin.clear();
+					std::cin >> a >> b;
+			}
+			board.setChoice(a, b);
+			selectedLines[i].product = a * b;
+			selectedLines[i].sum = a + b;
+			std::cout << " Data is in " << std::endl;
+			std::cout << " Here is i " << i << std::endl;
+			i++;
+		//}
 		Event event;
-		/////////////////////////Get mouse position on window---------------------
-		Vector2i pos = Mouse::getPosition(window);
-		/////////////////Print those dots----------------------------------------------
-		Board board(edge);
-		/////////////////Print those line--------------------------------------------
 		while (window.pollEvent(event)) {
-			
 			if (event.type == Event::Closed)
 				window.close();
-			/////////////////////Select the dot---------------------------------------------------
-			if (event.type == Event::MouseButtonPressed) {
-				if (event.key.code == Mouse::Left) {
-					for (auto t : board.getCircle()) {
-						if (t.getGlobalBounds().contains(pos.x, pos.y)) { //Need a function to create a vertex when this happens
-							std::cout << " YO ";
-							vertex[INDEX].position = t.getPosition(); //Create a Vertex
-							vertex[INDEX].color = Color::Black;
-							INDEX++;
-						}
-					}
-				}
-			}
-				if (event.type == Event::MouseButtonReleased) {
-					if (event.key.code == Mouse::Left) {
-						for (auto t : board.getCircle()) {
-							if (t.getGlobalBounds().contains(pos.x, pos.y)) {
-								std::cout << " Yay " << std::endl;
-								vertex[INDEX].position = t.getPosition();  //Create a Vertex
-								vertex[INDEX].color = Color::Black;
-								INDEX++;
-							}
-						}
-					}
-				}
 		}
 		window.clear(Color::White);
 		for ( auto i : board.getCircle()) {
 			window.draw(i);			
 		}
-		window.draw(vertex);
 		window.display();
+		board.PrintChoice();
 	}
 	return 0;
 }
