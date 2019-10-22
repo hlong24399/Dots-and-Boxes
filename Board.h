@@ -1,8 +1,7 @@
 #pragma once
 #include <vector>
 #include <SFML/Graphics.hpp>
-const int screen_x = 1000;
-const int screen_y = 1000;
+const float screen_size = 1000;
 using namespace sf;
 struct Choice {
 	int a;
@@ -14,19 +13,20 @@ struct PropOfAnB {
 };
 
 class Board {
-	
 public: //////Variable
-	int a{}, b{}, size{}, totalLines;
+	int a{}, b{}, totalLines, moveCount{};
+	float size{};
 	std::vector<CircleShape>circle; /////Save Circle
 	std::vector<Choice>choice; /////Save Choice
 	std::vector<PropOfAnB>selectedLines; /////Save sum and product to validate
-	VertexArray vertex;	
+	VertexArray vertex; ///Hold vertex	
+	std::vector<int>selectedDots;
 public: /////////Func
 
-	Board(int size);
+	Board(int size, RenderWindow &win);
 	void LineSelect(); ///input Choice
-	void printLine(); //Print choice
-	bool notValid(int a, int b, int size);
-	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);
-	VertexArray drawLines(int i);
+	bool notValid(int a, int b, int size) const;
+	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product) ;
+	void drawLines(RenderWindow &);
+	bool isBoxed(int a, int b); ///////////////How
 };
