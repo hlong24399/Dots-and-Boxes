@@ -9,16 +9,19 @@ Board::Board(int size, RenderWindow &win) { /////Create the game
 	vertex.setPrimitiveType(Lines); ///Set primitive type for vertex
 	vertex.resize(2*totalLines);	///Set its size
 	//Print those dots----------------------------------------------
-	float breadth = 0.8f * screen_size / static_cast<double>(size) - 1.f;
+	float breadth = static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f;
+	
 	for (int i = 0; i < size * size; i++) {
+		float circle_x = 0.1 * screen_size + float{ (i % size) * breadth }; ///Set the position for 
+		float circle_y = 0.1 * screen_size + float{ (i / size) * breadth };	///	those circles
 		circle.push_back(aCircle);
 		circle[i].setRadius(8);
-		circle[i].setPosition((0.1f * screen_size + (i % size) * breadth), (0.1 * screen_size + (i / size) * breadth));
+		circle[i].setPosition(circle_x, circle_y);
 		circle[i].setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
 		circle[i].setOrigin(4, 4);
 	} 
+	
 	////Set up the board, draw dot first before input the first choice like what happened on Prof's code
-
 	for ( auto i : circle)
 	win.draw(i);
 	win.display();
@@ -43,8 +46,7 @@ void Board::LineSelect()
 	aProp.product = a * b;						////Input product into 
 	aProp.sum = a + b;							////vector::selectedLines to 
 	selectedLines.push_back(aProp);				////use for Board::isTaken
-	isBoxed(aChoice.a, aChoice.b);
-		
+	box.setEdges(a, b);
 }
 
 ///Print those Line ON CONSOLE--------------------------------------------
@@ -90,8 +92,4 @@ void Board::drawLines(RenderWindow& win)
 	//} ////This is to see what choice is made on CONSOLE
 	win.draw(vertex);
 	moveCount++;
-}
-
-bool Board::isBoxed(int a, int b)
-{
 }
