@@ -1,81 +1,97 @@
 #include "Board.h"
 #include <iostream>
 //Create grid
-Board::Board(int size) { /////Create the game
+Board::Board(int size, RenderWindow &win) { /////Create the game
 	this->size = size;
 	std::cout << " The size of the game is " << size << std::endl;
-	totalLines = 2 * (size * size - 1); ////Calculate the total valid lines
+	totalLines = 2*(size*size - size); ////Calculate the total valid lines
 	CircleShape aCircle; ///Create a visual Dot
 	vertex.setPrimitiveType(Lines); ///Set primitive type for vertex
-	vertex.resize(totalLines);	///Set its size
+	vertex.resize(2*totalLines);	///Set its size
 	//Print those dots----------------------------------------------
+	float breadth = 0.8f * screen_size / static_cast<double>(size) - 1.f;
 	for (int i = 0; i < size * size; i++) {
 		circle.push_back(aCircle);
-		circle[i].setRadius(10);
-		circle[i].setPosition((40.f + (i % size) * screen_x / size), (40.f + (i / size) * screen_y / size));
-		circle[i].setFillColor(Color::Red);
-		circle[i].setOrigin(5, 5);
-	}
-	LineSelect(); /////Check if the line is good
+		circle[i].setRadius(8);
+		circle[i].setPosition((0.1f * screen_size + (i % size) * breadth), (0.1 * screen_size + (i / size) * breadth));
+		circle[i].setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
+		circle[i].setOrigin(4, 4);
+	} 
+	////Set up the board, draw dot first before input the first choice like what happened on Prof's code
+
+	for ( auto i : circle)
+	win.draw(i);
+	win.display();
 }
 
 /////Select the line-------------------------------------------------
-void Board::LineSelect() 
+void Board::LineSelect()
 {
-	for (int i = 0; i < totalLines; i++) {
-		Choice aChoice;                  ///To save this single choice into vector::choice
-		PropOfAnB aProp;					////to save a prop of a and b into vector::selectedLines to use for Board::isTaken
-		std::cout << " \n Select the dot that you want to connect: ";
+	Choice aChoice;                  ///To save this single choice into vector::choice
+	PropOfAnB aProp;					////to save a prop of a and b into vector::selectedLines to use for Board::isTaken
+	std::cout << " \n Select the dot that you want to connect: ";
+	std::cin >> a >> b;
+	while ((notValid(a, b, size)) || (isTaken(a, b, selectedLines))) { ////Validation
+		std::cout << " Wrong input " << std::endl;
+		std::cin.clear();
 		std::cin >> a >> b;
-		while ((notValid(a, b, size)) || (isTaken(a, b, selectedLines))) { ////Validation
-			std::cout << " Wrong input " << std::endl;
-			std::cin.clear();
-			std::cin >> a >> b;
-		}
-		aChoice.a = a;												////Input the valid
-		aChoice.b = b;												//// choice into 
-		choice.push_back(aChoice);									////the vector::choice
-		aProp.product = a * b;						////Input product into 
-		aProp.sum = a + b;							////vector::selectedLines to 
-		selectedLines.push_back(aProp);				////use for Board::isTaken
-		std::cout << " Data is in " << std::endl;               ///Confirm that data is in
-		std::cout << " Here is i " << i << std::endl;			///Checking value of i
-		printLine();										///Print to see what line is taken
-		drawLines(i);
 	}
+	if (a < b) { aChoice.a = a; aChoice.b = b; }			////This is for sorting a and b
+	else { aChoice.a = b; aChoice.b = a; }						////   to be odd and even to further use
+	choice.push_back(aChoice);									////the vector::choice
+	for (auto i : choice) std::cout << i.a << "-------- " << i.b << std::endl;
+	aProp.product = a * b;						////Input product into 
+	aProp.sum = a + b;							////vector::selectedLines to 
+	selectedLines.push_back(aProp);				////use for Board::isTaken
+	isBoxed(aChoice.a, aChoice.b);
+		
 }
 
 ///Print those Line ON CONSOLE--------------------------------------------
-void Board::printLine()				
-{
-	for (auto i : choice) {
-		std::cout << std::fixed << std::showpoint;
-		std::cout << i.a << " ---------- " << i.b << std::endl;
-	}
-}
+//void Board::printLine()				
+//{
+//	for (auto i : choice) {
+//		std::cout << std::fixed << std::showpoint;
+//		std::cout << i.a << " ---------- " << i.b << std::endl;
+//	}
+//}
 
 ///Validation------------------------------------------
-bool Board::notValid(int a, int b, int size) {  
+bool Board::notValid(int a, int b, int size)  const {
 	if ((abs(b - a) == size || (abs(b - a) == 1 && std::max(a, b) % size != 0)) && (a < size * size && b < size * size))	return false;
 	std::cout << " Not Valid " << std::endl;
 	return true;
 }
 
 ///See if it's taken or not----------------------------------------
-bool Board::isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product) { 
-	bool SumValid = false, ProductValid = false;
+bool Board::isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product) {
 	for (auto i : Sum_Product) {
-		if ((a * b) == i.product && (a + b) == i.sum) return true;
+		if ((a * b) == i.product && (a + b) == i.sum) {
+			std::cout << " This line is taken already " << std::endl;
+			return true;
+		}
 	}
 	return false;
 }
 
-VertexArray Board::drawLines(int i)
+//Draw those stuff
+void Board::drawLines(RenderWindow& win)
 {
-	VertexArray vertex(Lines, 2 * (size*size - 1));
-	std::cout << " Line is drawed ";
-	//std::cout << circle[choice[i].a].getPosition().x << std::endl;
-	//std::cout << circle[choice[i].b].getPosition().y << std::endl;
-	vertex[i].position = circle[choice[i].a].getPosition();
-	vertex[i+1].position = circle[choice[i].b].getPosition(); //////////Problem here
+	vertex[2 * moveCount].position.x = circle[choice[moveCount].a].getPosition().x + 5;				///Draws Vertex
+	vertex[2 * moveCount].position.y = circle[choice[moveCount].a].getPosition().y + 5;				///  by using
+	vertex[2* moveCount + 1].position.x = circle[choice[moveCount].b].getPosition().x +5;			///  coord of circle
+	vertex[2 * moveCount + 1].position.y = circle[choice[moveCount].b].getPosition().y + 5;			///  +5 because the radius is 10
+	vertex[2 * moveCount].color = Color(rand() % 255, rand() % 255, rand() % 255);
+	vertex[2 * moveCount + 1].color = Color(rand() % 255, rand() % 255, rand() % 255);
+	for (auto i : circle)																			///Redraw the circle
+		win.draw(i);
+	//for (unsigned int u = 0; u < choice.size(); u ++ ) {
+	//	std::cout << choice[u].a << "---------------" << choice[u].b << std::endl;
+	//} ////This is to see what choice is made on CONSOLE
+	win.draw(vertex);
+	moveCount++;
+}
+
+bool Board::isBoxed(int a, int b)
+{
 }
