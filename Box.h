@@ -3,21 +3,33 @@
 #include <sfml/Window.hpp>
 #include <iostream>
 #include <utility>
-#include "Board.h"
+
 using namespace sf;
+
+
 class Box
 {
 	friend class Board;
-private:
+public:
 	std::vector<std::pair<int, int>> edges;
+
 public:
 	Box() {
 		std::cout << " Yep ";
 	}
-	void setEdges(int small, int big) {
-		std::pair<int, int> anEdge;
-		anEdge = std::make_pair(small, big);
-		edges.push_back(anEdge);
+	void printBox() {
+		std::cout << " Here is what inside the box " << std::endl;
+		for (auto i : edges) {
+			std::cout << i.first << " --------- " << i.second << std::endl;
+		}
+	}
+	/*-Idea for edgeChecking-----------------------------------------------------
+bool isSquareComplete(int x, int y) {
+	return linesX[x][y] && linesX[x + 1][y] && linesY[x][y] && linesY[x][y + 1];
+}*/
+	void isBoxed() {
+		bool top = false, bottom = false, right = false, left = false;
+		
+
 	}
 };
-
