@@ -1,16 +1,26 @@
 #include "Board.h"
 #include <iostream>
+#include "Box.h"
+#include <utility>
+void Board::convert(Choice aChoice)
+{
+	
+	std::pair<int, int>aPair;
+	aPair = std::make_pair(aChoice.a, aChoice.b);
+	box.edges.push_back(aPair);
+	box.printBox(); ////This one is to check if it's working 
+}
 //Create grid
-Board::Board(int size, RenderWindow &win) { /////Create the game
+Board::Board(int size, RenderWindow& win) { /////Create the game
+	
 	this->size = size;
 	std::cout << " The size of the game is " << size << std::endl;
-	totalLines = 2*(size*size - size); ////Calculate the total valid lines
+	totalLines = 2 * (size * size - size); ////Calculate the total valid lines
 	CircleShape aCircle; ///Create a visual Dot
 	vertex.setPrimitiveType(Lines); ///Set primitive type for vertex
-	vertex.resize(2*totalLines);	///Set its size
+	vertex.resize(2 * totalLines);	///Set its size
 	//Print those dots----------------------------------------------
 	float breadth = static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f;
-	
 	for (int i = 0; i < size * size; i++) {
 		float circle_x = 0.1 * screen_size + float{ (i % size) * breadth }; ///Set the position for 
 		float circle_y = 0.1 * screen_size + float{ (i / size) * breadth };	///	those circles
@@ -19,12 +29,13 @@ Board::Board(int size, RenderWindow &win) { /////Create the game
 		circle[i].setPosition(circle_x, circle_y);
 		circle[i].setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
 		circle[i].setOrigin(4, 4);
-	} 
+	}
 	
 	////Set up the board, draw dot first before input the first choice like what happened on Prof's code
-	for ( auto i : circle)
-	win.draw(i);
+	for (auto i : circle)
+		win.draw(i);
 	win.display();
+	
 }
 
 /////Select the line-------------------------------------------------
@@ -40,13 +51,14 @@ void Board::LineSelect()
 		std::cin >> a >> b;
 	}
 	if (a < b) { aChoice.a = a; aChoice.b = b; }			////This is for sorting a and b
-	else { aChoice.a = b; aChoice.b = a; }						////   to be odd and even to further use
-	choice.push_back(aChoice);									////the vector::choice
-	for (auto i : choice) std::cout << i.a << "-------- " << i.b << std::endl;
+	else { aChoice.a = b; aChoice.b = a; }					//// so that a always bigger than b
+	choice.push_back(aChoice);									////the Board::choice
+	//for (auto i : choice) std::cout << i.a << "-------- " << i.b << std::endl;
 	aProp.product = a * b;						////Input product into 
 	aProp.sum = a + b;							////vector::selectedLines to 
 	selectedLines.push_back(aProp);				////use for Board::isTaken
-	box.setEdges(a, b);
+	convert(aChoice);
+	box.isBoxed();
 }
 
 ///Print those Line ON CONSOLE--------------------------------------------
@@ -81,7 +93,7 @@ void Board::drawLines(RenderWindow& win)
 {
 	vertex[2 * moveCount].position.x = circle[choice[moveCount].a].getPosition().x + 5;				///Draws Vertex
 	vertex[2 * moveCount].position.y = circle[choice[moveCount].a].getPosition().y + 5;				///  by using
-	vertex[2* moveCount + 1].position.x = circle[choice[moveCount].b].getPosition().x +5;			///  coord of circle
+	vertex[2 * moveCount + 1].position.x = circle[choice[moveCount].b].getPosition().x + 5;			///  coord of circle
 	vertex[2 * moveCount + 1].position.y = circle[choice[moveCount].b].getPosition().y + 5;			///  +5 because the radius is 10
 	vertex[2 * moveCount].color = Color(rand() % 255, rand() % 255, rand() % 255);
 	vertex[2 * moveCount + 1].color = Color(rand() % 255, rand() % 255, rand() % 255);
