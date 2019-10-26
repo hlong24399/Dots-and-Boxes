@@ -18,22 +18,22 @@ struct PropOfAnB {
 class Board {
 private:
 public: //////Variable
-	Box box;
+	Edge edge;
 	int a{}, b{}, totalLines, moveCount{};
+	float breadth{};
 	int size{};
-	std::vector<CircleShape>circle; /////Save Circle
-	std::vector<Choice>choice; /////Save Choice
-	std::vector<PropOfAnB>selectedLines; /////Save sum and product to validate
-	VertexArray vertex; ///Hold vertex	
-	std::vector<int>selectedDots;
+	std::vector<RectangleShape>rects;				///Save those Rectangle for drawing purpose
+	std::vector<CircleShape>circle;					/////Save Dots
+	std::vector<Choice>choice;						/////Save Choices
+	std::vector<PropOfAnB>selectedLines;			/////Save sum and product to validate
+	VertexArray vertex;								///Hold vertex	
 
 public: /////////Func
-	void convert(Choice aChoice);
 	Board(int size, RenderWindow& win);
-	void LineSelect(); ///input Choice
-	bool notValid(int a, int b, int size) const; //Validation
-	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product); //Validation 
-	void drawLines(RenderWindow&); //Draw those lines
-								   
+	void LineSelect();												////input Choice
+	bool notValid(int a, int b, int size) const;					////Validation
+	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation 
+	void Draw(RenderWindow&);										////Draw lines and boxes	
+	void setBoxes(int);												////Set those boxes
 
 };
