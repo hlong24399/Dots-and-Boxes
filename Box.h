@@ -7,29 +7,14 @@
 using namespace sf;
 
 
-class Box
+class Edge
 {
-	friend class Board;
+	//friend class Board;
 public:
-	std::vector<std::pair<int, int>> edges;
-
+	std::vector<std::pair<int, int>> Edges;   ///First is column, Second is row
+	int size{}, totalLines{};
 public:
-	Box() {
-		std::cout << " Yep ";
-	}
-	void printBox() {
-		std::cout << " Here is what inside the box " << std::endl;
-		for (auto i : edges) {
-			std::cout << i.first << " --------- " << i.second << std::endl;
-		}
-	}
-	/*-Idea for edgeChecking-----------------------------------------------------
-bool isSquareComplete(int x, int y) {
-	return linesX[x][y] && linesX[x + 1][y] && linesY[x][y] && linesY[x][y + 1];
-}*/
-	void isBoxed() {
-		bool top = false, bottom = false, right = false, left = false;
-		
-
-	}
+	void inputEdges(int a, int b);
+	void setSize(int size, int totalLines);
+	bool in(int a, int b);
 };
