@@ -6,16 +6,16 @@
 
 
 Board::Board(int size, RenderWindow& win) { /////Create the game
-	
+
 	this->size = size;
 	totalLines = 2 * (size * size - size);	////Calculate the total valid lines
-	edge.setSize(size,totalLines);			////Pass size and totalLines to box class
+	edge.setSize(size, totalLines);			////Pass size and totalLines to box class
 	std::cout << " The size of the game is " << size << std::endl;
 	CircleShape aCircle; ///Create a visual Dot
 	vertex.setPrimitiveType(Lines); ///Set primitive type for vertex
 	vertex.resize(2 * totalLines);	///Set its size
 	float breadth = static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f;
-	
+
 	//Print those dots----------------------------------------------
 	for (int i = 0; i < size * size; i++) {
 		float circle_x = 0.1 * screen_size + float{ (i % size) * breadth }; ///Set the position for 
@@ -23,11 +23,11 @@ Board::Board(int size, RenderWindow& win) { /////Create the game
 		circle.push_back(aCircle);
 		circle[i].setRadius(8);
 		circle[i].setPosition(circle_x, circle_y);
-		circle[i].setFillColor(Color(rand() % 255, rand() % 255, rand() % 255));
+		circle[i].setFillColor(Color(255, 0, 20));
 		circle[i].setOrigin(4, 4);
 	}
 	////Set up the board, draw dot first before input the first choice like what happened on Prof's code
-	win.clear(Color::Cyan);
+	win.clear(Color(192, 192, 192, 200));
 	for (auto i : circle)
 		win.draw(i);
 	win.display();
@@ -50,7 +50,6 @@ void Board::LineSelect()
 	if (a < b) { aChoice.a = a; aChoice.b = b; }			////This is for sorting a and b
 	else { aChoice.a = b; aChoice.b = a; }					//// so that a always smaller than b
 	choice.push_back(aChoice);									////the Board::choice
-	//for (auto i : choice) std::cout << i.a << "-------- " << i.b << std::endl;
 	aProp.product = a * b;						////Input product into 
 	aProp.sum = a + b;							////vector::selectedLines to 
 	selectedLines.push_back(aProp);				////use for Board::isTaken
@@ -92,34 +91,46 @@ void Board::Draw(RenderWindow& win)
 	vertex[2 * moveCount].position.y = circle[choice[moveCount].a].getPosition().y + 5;				///  by using
 	vertex[2 * moveCount + 1].position.x = circle[choice[moveCount].b].getPosition().x + 5;			///  coord of circle
 	vertex[2 * moveCount + 1].position.y = circle[choice[moveCount].b].getPosition().y + 5;			///  +5 because the radius is 10
-	vertex[2 * moveCount].color = Color::Red;
-	vertex[2 * moveCount + 1].color = Color::Red;
+	vertex[2 * moveCount].color = Color::Yellow;
+	vertex[2 * moveCount + 1].color = Color::Yellow;
 	for (auto i : circle) win.draw(i);																///Redraw the circle
 	win.draw(vertex);
 	moveCount++;
 	//Draw those boxes------------------------------------------------------------------
 	for (auto t : rects) win.draw(t);
-	
+
 }
 
+//Set up the boxes
 void Board::setBoxes(int leftcorner)
 {
 	float Box_breadth = (static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f) - 4; //Box breadth is 4 pixel smaller than board breadth
 	RectangleShape new_rect(Vector2f(Box_breadth, Box_breadth));
-	new_rect.setFillColor(Color::Yellow);
+	new_rect.setFillColor(Color(0, 0, 0, 200));
 	new_rect.setPosition(Vector2f(circle[leftcorner].getPosition()) + Vector2f(5, 5));
-	rects.push_back(new_rect);	
+	rects.push_back(new_rect);
+	//Must be something here to save score.
+	setScore(leftcorner);
 }
 
-	
-
-
-
-
-
-
-
-
-
-
-
+void Board::setScore(int box)
+{
+	bool isRepeated = false;
+	for (auto i : checkRepeated) {
+		if (box == i)  isRepeated = true;
+		
+	}
+	if (!isRepeated) {
+		checkRepeated.push_back(box);
+		if (scoreCount % 2 == 0) {
+			score1++;
+			scoreCount++;
+			std::cout << " Current FIRST score : " << score1 << std::endl;
+		}
+		else if (scoreCount % 2 == 1) {
+			score2++;
+			scoreCount++;
+			std::cout << " Current SECOND score : " << score2 << std::endl;
+		}
+	}
+}
