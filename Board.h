@@ -27,7 +27,10 @@ public: //////Variable
 	std::vector<Choice>choice;						/////Save Choices
 	std::vector<PropOfAnB>selectedLines;			/////Save sum and product to validate
 	VertexArray vertex;								///Hold vertex	
-
+	///Idea for 2 players score save function.
+	int score1{}, score2{}, scoreCount{};
+	std::vector<int>checkRepeated;
+	//----------------------------------------
 public: /////////Func
 	Board(int size, RenderWindow& win);
 	void LineSelect();												////input Choice
@@ -35,5 +38,12 @@ public: /////////Func
 	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation 
 	void Draw(RenderWindow&);										////Draw lines and boxes	
 	void setBoxes(int);												////Set those boxes
+	///Idea for 2 players score save function.
+	void setScore(int);
+
+
+
+
+
 
 };
