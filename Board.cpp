@@ -1,6 +1,8 @@
 #include "Board.h"
-#include <iostream>
 #include "Box.h"
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <utility>
 
 
@@ -14,8 +16,8 @@ Board::Board(int size, RenderWindow& win) { /////Create the game
 	CircleShape aCircle; ///Create a visual Dot
 	vertex.setPrimitiveType(Lines); ///Set primitive type for vertex
 	vertex.resize(2 * totalLines);	///Set its size
+	circle.resize(totalLines);
 	float breadth = static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f;
-
 	//Print those dots----------------------------------------------
 	for (int i = 0; i < size * size; i++) {
 		float circle_x = 0.1 * screen_size + float{ (i % size) * breadth }; ///Set the position for 
@@ -54,7 +56,7 @@ void Board::LineSelect()
 	aProp.sum = a + b;							////vector::selectedLines to 
 	selectedLines.push_back(aProp);				////use for Board::isTaken
 	edge.inputEdges(aChoice.a, aChoice.b);
-	//box.printBox();		 ///Just to check whatever is in the box::edges
+	setVertex();
 	for (int i = 0; i < size * (size - 1); i++) {
 		if (edge.in(i, i + 1) && edge.in(i, i + size)				////This is to detect if there are enough edges to 
 			&& edge.in(i + 1, i + 1 + size)						////	make a box .  "i" will be the index of the
@@ -68,8 +70,11 @@ void Board::LineSelect()
 
 ///Validation------------------------------------------
 bool Board::notValid(int a, int b, int size)  const {
-	if ((abs(b - a) == size || (abs(b - a) == 1 && std::max(a, b) % size != 0)) && (a < size * size && b < size * size))	return false;
-	std::cout << " Not Valid " << std::endl;
+	if ((abs(b - a) == size 
+	   || (abs(b - a) == 1 && std::max(a, b) % size != 0)) 
+	   && (a < size * size && b < size * size))	
+			return false;
+	//std::cout << " Not Valid " << std::endl;
 	return true;
 }
 
@@ -87,18 +92,20 @@ bool Board::isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product) {
 //Draw those stuff
 void Board::Draw(RenderWindow& win)
 {
+	for (auto i : circle) win.draw(i);			//Redraw the circle
+	win.draw(vertex);							//Draw those Vertex
+	for (auto t : rects) win.draw(t);			//Draw those boxes
+}
+
+void Board::setVertex()
+{
 	vertex[2 * moveCount].position.x = circle[choice[moveCount].a].getPosition().x + 5;				///Draws Vertex
 	vertex[2 * moveCount].position.y = circle[choice[moveCount].a].getPosition().y + 5;				///  by using
 	vertex[2 * moveCount + 1].position.x = circle[choice[moveCount].b].getPosition().x + 5;			///  coord of circle
 	vertex[2 * moveCount + 1].position.y = circle[choice[moveCount].b].getPosition().y + 5;			///  +5 because the radius is 10
 	vertex[2 * moveCount].color = Color::Yellow;
 	vertex[2 * moveCount + 1].color = Color::Yellow;
-	for (auto i : circle) win.draw(i);																///Redraw the circle
-	win.draw(vertex);
 	moveCount++;
-	//Draw those boxes------------------------------------------------------------------
-	for (auto t : rects) win.draw(t);
-
 }
 
 //Set up the boxes
@@ -110,27 +117,38 @@ void Board::setBoxes(int leftcorner)
 	new_rect.setPosition(Vector2f(circle[leftcorner].getPosition()) + Vector2f(5, 5));
 	rects.push_back(new_rect);
 	//Must be something here to save score.
-	setScore(leftcorner);
 }
 
-void Board::setScore(int box)
-{
-	bool isRepeated = false;
-	for (auto i : checkRepeated) {
-		if (box == i)  isRepeated = true;
-		
+
+void Board::getRandomGeneratorBot() {
+	//bool notGood = true;						////To validate the taken lines
+	int a{}, b{}, loopCount{};
+	PropOfAnB aProp;
+	Choice aChoice;
+	srand(time(NULL));
+	a = rand() % (size * size) ;
+	b = rand() % (size * size) ;
+	while (isTaken(a,b,selectedLines) || notValid(a, b, size) || ( a == b)) {	////This loop will stop whenever a,b is valid	
+		a = rand() % (size * size);
+		b = rand() % (size * size);
 	}
-	if (!isRepeated) {
-		checkRepeated.push_back(box);
-		if (scoreCount % 2 == 0) {
-			score1++;
-			scoreCount++;
-			std::cout << " Current FIRST score : " << score1 << std::endl;
-		}
-		else if (scoreCount % 2 == 1) {
-			score2++;
-			scoreCount++;
-			std::cout << " Current SECOND score : " << score2 << std::endl;
+	loopCount++;
+	if (a < b) { aChoice.a = a; aChoice.b = b; }			////This is for sorting a and b
+	else { aChoice.a = b; aChoice.b = a; }					//// so that a always smaller than b
+	choice.push_back(aChoice);									////the Board::choice
+	aProp.product = a * b;						////Input product into 
+	aProp.sum = a + b;							////vector::selectedLines to 
+	selectedLines.push_back(aProp);				////use for Board::isTaken
+	edge.inputEdges(aChoice.a, aChoice.b);
+	std::cout << " Bot chooses " << a << "-----" << b << std::endl;
+	setVertex();
+	for (int i = 0; i < size * (size - 1); i++) {
+		if (edge.in(i, i + 1) && edge.in(i, i + size)				////This is to detect if there are enough edges to 
+			&& edge.in(i + 1, i + 1 + size)						////	make a box .  "i" will be the index of the
+			&& edge.in(i + size, i + 1 + size)) {				////	circle that contains the upperleft corner
+			std::cout << " This is the i that works " << i << std::endl;
+			setBoxes(i);
 		}
 	}
 }
+
