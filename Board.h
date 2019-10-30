@@ -29,17 +29,19 @@ public: //////Variable
 	VertexArray vertex;								///Hold vertex	
 	///Idea for 2 players score save function.
 	int score1{}, score2{}, scoreCount{};
-	std::vector<int>checkRepeated;
 	//----------------------------------------
+
+
 public: /////////Func
 	Board(int size, RenderWindow& win);
 	void LineSelect();												////input Choice
 	bool notValid(int a, int b, int size) const;					////Validation
 	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation 
 	void Draw(RenderWindow&);										////Draw lines and boxes	
+	void setVertex();												////Set up the Vertex
 	void setBoxes(int);												////Set those boxes
 	///Idea for 2 players score save function.
-	void setScore(int);
+	void getRandomGeneratorBot();
 
 
 
