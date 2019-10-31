@@ -27,23 +27,23 @@ public: //////Variable
 	std::vector<Choice>choice;						/////Save Choices
 	std::vector<PropOfAnB>selectedLines;			/////Save sum and product to validate
 	VertexArray vertex;								///Hold vertex	
-	///Idea for 2 players score save function.
 	int score1{}, score2{}, scoreCount{};
-	//----------------------------------------
+	std::vector<int>boxStore;
+	std::pair<int, int> score;
 
 
 public: /////////Func
+	
 	Board(int size, RenderWindow& win);
 	void LineSelect();												////input Choice
 	bool notValid(int a, int b, int size) const;					////Validation
 	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation 
 	void Draw(RenderWindow&);										////Draw lines and boxes	
 	void setVertex();												////Set up the Vertex
-	void setBoxes(int);												////Set those boxes
-	///Idea for 2 players score save function.
-	void getRandomGeneratorBot();
-
-
+	void getBot();													////Call the bot to play
+	void Score_player(int);											////Save score for player
+	void Score_Bot(int);											////Save score for bot
+	void printScore();												////Print Score
 
 
 
