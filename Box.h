@@ -9,12 +9,11 @@ using namespace sf;
 
 class Edge
 {
-	//friend class Board;
-public:
+public:		///Var
 	std::vector<std::pair<int, int>> Edges;   ///First is column, Second is row
 	int size{}, totalLines{};
-public:
-	void inputEdges(int a, int b);
-	void setSize(int size, int totalLines);
-	bool in(int a, int b);
+public:		///Function
+	void inputEdges(int a, int b);			///Save the edges
+	void setSize(int size, int totalLines);	///set the size and total Lines
+	bool in(int a, int b);					///Check if there is box
 };
