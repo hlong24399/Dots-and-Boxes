@@ -13,15 +13,21 @@ int main() {
 	window.setPosition(Vector2i(1000,100));
 	window.setFramerateLimit(144);
 	int edge{}; ///////Size of the game
+	int moveCount{};
 	std::cout << " Enter the number of dots you want on an edge: ";
-	//std::cin >> edge; ////Input length of edge
-	edge = 3;
+	std::cin >> edge; ////Input length of edge
+	//edge = 4;
 	Board board(edge,window); ////Game starts
 	while (window.isOpen()) {
-
-
-		board.LineSelect();
-		board.getRandomGeneratorBot();
+		if (moveCount != edge * edge - edge) {			//Sentinel to end the game
+			board.LineSelect();
+			board.getBot();
+			moveCount++;
+		}
+		else {
+			board.printScore();
+			return 0;
+		}
 		Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
