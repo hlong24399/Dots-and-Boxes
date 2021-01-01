@@ -26,19 +26,19 @@ public: //////Variable
 	std::vector<CircleShape>circle;					/////Save Dots
 	std::vector<Choice>choice;						/////Save Choices
 	std::vector<PropOfAnB>selectedLines;			/////Save sum and product to validate
-	VertexArray vertex;								///Hold vertex	
+	VertexArray vertex;								///Hold vertex
 	int score1{}, score2{}, scoreCount{};
 	std::vector<int>boxStore;
 	std::pair<int, int> score;
 
 
 public: /////////Func
-	
-	Board(int size, RenderWindow& win);
+
+	Board(int size, RenderWindow& win, sf::Color c);
 	void LineSelect();												////input Choice
 	bool notValid(int a, int b, int size) const;					////Validation
-	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation 
-	void Draw(RenderWindow&);										////Draw lines and boxes	
+	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation
+	void Draw(RenderWindow&);										////Draw lines and boxes
 	void setVertex();												////Set up the Vertex
 	void getBot();													////Call the bot to play
 	void Score_player(int);											////Save score for player
