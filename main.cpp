@@ -7,7 +7,6 @@
 using namespace sf;
 
 void welcome();
-
 Color c = Color(0,255,0, 200);
 int main() {
 
@@ -19,11 +18,17 @@ int main() {
 	welcome();
 	std::cin >> edge; ////Input length of edge
 	//edge = 4;
+
+	int ord{};
 	Board board(edge,window,c); ////Game starts
 	while (window.isOpen()) {
 		if (moveCount != edge * edge - edge) {			//Sentinel to end the game
 			board.LineSelect();
+			ord = 0;
+			board.detect_box(ord);
 			board.getBot();
+			ord = 1;
+			board.detect_box(ord);
 			moveCount++;
 		}
 		else {

@@ -44,7 +44,7 @@ public: /////////Func
 	void Score_player(int);											////Save score for player
 	void Score_Bot(int);											////Save score for bot
 	void printScore();												////Print Score
-
+	void detect_box(int o);
 
 
 
