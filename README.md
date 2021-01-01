@@ -1,5 +1,8 @@
 # Dot and Box game
 
+## Install sfml
+
+`sudo apt-get install libsfml-dev`
 
 ## To compile the project
 
