@@ -69,11 +69,18 @@ int main() {
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
+				std::cout << "in poll" << std::endl;
 		}
+		std::cout << "endnig" << std::endl;
 		window.clear(color);
 		board.Draw(window);
 		window.display();
 
 	}
 	return 0;
+}
+
+
+void welcome() {
+	cout << 
 }
