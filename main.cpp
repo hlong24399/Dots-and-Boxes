@@ -7,29 +7,57 @@
 using namespace sf;
 
 void welcome();
-Color c = Color(0,255,0, 200);
+Color color = Color(0,255,0, 200);
 int main() {
 
 	RenderWindow window(VideoMode(screen_size,screen_size ), " Dots and Boxes ", Style::Default);
 	window.setPosition(Vector2i(1000,100));
 	window.setFramerateLimit(144);
-	int edge{}; ///////Size of the game
+	int edge{}; //Size of the game
 	int moveCount{};
 	welcome();
-	std::cin >> edge; ////Input length of edge
-	//edge = 4;
+	// std::cin >> edge; //Input length of edge
+	edge = 4;
 
 	int ord{};
-	Board board(edge,window,c); ////Game starts
+	int c = 1;
+	Board board(edge,window,color); //Game starts
 	while (window.isOpen()) {
-		if (moveCount != edge * edge - edge) {			//Sentinel to end the game
-			board.LineSelect();
-			ord = 0;
-			board.detect_box(ord);
-			board.getBot();
-			ord = 1;
-			board.detect_box(ord);
+		//Make the game let player keep going if a box is complete, same as the bot. Use on_streak bool to determine it.
+		if (moveCount != 2*(edge * edge - edge)) {			//Sentinel to end the game
+			switch(c) {
+				case 1:
+					std::cout << "case1";
+					board.LineSelect();
+					ord = 0;
+					board.detect_box(ord);
+					if (board.on_streak)
+					{
+						c = 1;
+						break;
+					}
+					else {
+						c = 2;
+						break;
+					}
+				case 2:
+					std::cout << "case2"	;
+					board.getBot();
+					ord = 1;
+					board.detect_box(ord);
+					if (board.on_streak)
+					{
+						c = 2;
+						break;
+					}
+					else
+					{
+						c = 1;
+						break;
+					}
+			}
 			moveCount++;
+			std::cout << moveCount;
 		}
 		else {
 			board.printScore();
@@ -42,7 +70,7 @@ int main() {
 			if (event.type == Event::Closed)
 				window.close();
 		}
-		window.clear(c);
+		window.clear(color);
 		board.Draw(window);
 		window.display();
 

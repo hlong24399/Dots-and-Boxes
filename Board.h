@@ -17,34 +17,35 @@ struct PropOfAnB {
 
 class Board {
 private:
-public: //////Variable
+public: //Variable
 	Edge edge;
 	int a{}, b{}, totalLines, moveCount{};
 	float breadth{};
 	int size{};
-	std::vector<RectangleShape>rects;				///Save those Rectangle for drawing purpose
-	std::vector<CircleShape>circle;					/////Save Dots
-	std::vector<Choice>choice;						/////Save Choices
-	std::vector<PropOfAnB>selectedLines;			/////Save sum and product to validate
-	VertexArray vertex;								///Hold vertex
+	std::vector<RectangleShape>rects;				//Save those Rectangle for drawing purpose
+	std::vector<CircleShape>circle;					//Save Dots
+	std::vector<Choice>choice;						//Save Choices
+	std::vector<PropOfAnB>selectedLines;			//Save sum and product to validate
+	VertexArray vertex;								//Hold vertex
 	int score1{}, score2{}, scoreCount{};
 	std::vector<int>boxStore;
 	std::pair<int, int> score;
 
+	bool on_streak;
 
-public: /////////Func
+public: //Func
 
 	Board(int size, RenderWindow& win, sf::Color c);
-	void LineSelect();												////input Choice
-	bool notValid(int a, int b, int size) const;					////Validation
-	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	////Validation
-	void Draw(RenderWindow&);										////Draw lines and boxes
-	void setVertex();												////Set up the Vertex
-	void getBot();													////Call the bot to play
-	void Score_player(int);											////Save score for player
-	void Score_Bot(int);											////Save score for bot
-	void printScore();												////Print Score
-	void detect_box(int o);
+	void LineSelect();												//input Choice
+	bool notValid(int a, int b, int size) const;					//Validation
+	bool isTaken(int a, int b, std::vector<PropOfAnB>Sum_Product);	//Validation
+	void Draw(RenderWindow&);										//Draw lines and boxes
+	void setVertex();												//Set up the Vertex
+	void getBot();													//Call the bot to play
+	void Score_player(int);											//Save score for player
+	void Score_Bot(int);											//Save score for bot
+	void printScore();												//Print Score
+	void detect_box(int);
 
 
 

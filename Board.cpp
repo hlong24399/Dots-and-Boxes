@@ -9,6 +9,7 @@
 
 Board::Board(int size, RenderWindow& win, sf::Color c) { //Create the game
 
+	on_streak = false;
 	this->size = size;
 	totalLines = 2 * (size * size - size);	//Calculate the total valid lines
 	edge.setSize(size, totalLines);			//Pass size and totalLines to box class
@@ -58,16 +59,6 @@ void Board::LineSelect()
 	selectedLines.push_back(aProp);				//use for Board::isTaken
 	edge.inputEdges(aChoice.a, aChoice.b);
 	setVertex();
-	//This is to detect if there are enough edges to
-	//	make a box .  "i" will be the index of the
-	//	circle that contains the upperleft corner
-	// for (int i = 0; i < size * size - 1; i++) {
-	// 	if (edge.in(i, i + 1) && edge.in(i, i + size)
-	// 		&& edge.in(i + 1, i + 1 + size)
-	// 		&& edge.in(i + size, i + 1 + size)) {
-	// 		Score_player(i);
-	// 	}
-	// }
 }
 
 
@@ -131,13 +122,6 @@ void Board::getBot() {
 	edge.inputEdges(aChoice.a, aChoice.b);
 	std::cout << " Bot chooses " << a << "-----" << b << std::endl;
 	setVertex();
-	// for (int i = 0; i < size * size - 1; i++) {
-	// 	if (edge.in(i, i + 1) && edge.in(i, i + size)				//This is to detect if there are enough edges to
-	// 		&& edge.in(i + 1, i + 1 + size)						//	make a box .  "i" will be the index of the
-	// 		&& edge.in(i + size, i + 1 + size)) {				//	circle that contains the upperleft corner
-	// 		Score_Bot(i);
-	// 	}
-	// }
 }
 
 //Save scores for player
@@ -148,6 +132,7 @@ void Board::Score_player(int leftcorner)
 			if (leftcorner == i) isValid = false;
 		}
 		if (isValid) {
+			on_streak = true;
 			score.first++;
 			boxStore.push_back(leftcorner);
 			std::cout << " This is the new box " << std::endl;
@@ -156,6 +141,9 @@ void Board::Score_player(int leftcorner)
 			new_rect.setFillColor(Color(0, 0, 0, 200));
 			new_rect.setPosition(Vector2f(circle[leftcorner].getPosition()) + Vector2f(5, 5));			//Use the position of Circle to draw those boxes left corner
 			rects.push_back(new_rect);
+		}
+		else {
+			on_streak = false;
 		}
 
 }
@@ -168,13 +156,17 @@ void Board::Score_Bot(int leftcorner)
 			if (leftcorner == i) isValid = false;
 		}
 		if (isValid) {
+			on_streak = true;
 			score.second++;
 			boxStore.push_back(leftcorner);
 			float Box_breadth = (static_cast<float>(0.8f * screen_size) / static_cast<float>(size) - 1.f) - 4; //Box breadth is 4 pixel smaller than board breadth
 			RectangleShape new_rect(Vector2f(Box_breadth, Box_breadth));
-			new_rect.setFillColor(Color(120, 60, 0, 200));
+			new_rect.setFillColor(Color(150, 60, 80, 200));
 			new_rect.setPosition(Vector2f(circle[leftcorner].getPosition()) + Vector2f(5, 5)); //Use the position of Circle to draw those boxes left corner
 			rects.push_back(new_rect);
+		}
+		else {
+			on_streak = false;
 		}
 
 
@@ -184,21 +176,27 @@ void Board::Score_Bot(int leftcorner)
 //Show the Score on CONSOLE
 void Board::printScore()
 {
-	std::cout << "     The Score Board " << std::endl;
+	std::cout << "   The Score Board " << std::endl;
 	std::cout << " Player |" << score.first << " Boxes " << std::endl;
 	std::cout << " Bot | " << score.second << " Boxes " << std::endl;
 }
 
+//This is to detect if there are enough edges to
+//	make a box .  "i" will be the index of the
+//	circle that contains the upperleft corner
+
 void Board::detect_box(int o) {
 	for (int i = 0; i < size * size - 1; i++) {
-		if (edge.in(i, i + 1) && edge.in(i, i + size)				//This is to detect if there are enough edges to
-		&& edge.in(i + 1, i + 1 + size)						//	make a box .  "i" will be the index of the
-		&& edge.in(i + size, i + 1 + size)) {				//	circle that contains the upperleft corner
+		if (edge.in(i, i + 1) && edge.in(i, i + size)
+		&& edge.in(i + 1, i + 1 + size)
+		&& edge.in(i + size, i + 1 + size)) {
 			if (o) {
 				Score_Bot(i);
+				// std::cout << "bot" << std::endl;
 			}
 			else {
 				Score_player(i);
+				// std::cout << "player" << std::endl;
 			}
 		}
 	}
