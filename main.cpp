@@ -80,7 +80,6 @@ int main() {
 	return 0;
 }
 
-
 void welcome() {
-	cout << 
+	std::cout << "welcome to Dots and Boxes game, you have to complete more squares on the boards than the bots to win the game. Start by choosing your board size, and make your move by choosing the two dots to form an edge!" << std::endl;
 }
