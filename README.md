@@ -6,7 +6,7 @@
 
 ## To compile the project
 
-` g++ -c *.cpp; g++ main.o Board.o Box.o -o sfml.exe -lsfml-graphics -lsfml-window -lsfml-system; `
+` g++ -c *.cpp; g++ main.o Board.o Box.o -o sfml.app -lsfml-graphics -lsfml-window -lsfml-system; `
 
 ## To run the app
 
