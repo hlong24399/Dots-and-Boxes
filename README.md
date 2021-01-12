@@ -10,4 +10,4 @@
 
 ## To run the app
 
-` ./sfml.exe`
+` ./sfml.app`
