@@ -11,3 +11,6 @@
 ## To run the app
 
 ` ./sfml.app`
+
+
+![The game while playing](demo.png)

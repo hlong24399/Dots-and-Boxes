@@ -16,9 +16,7 @@ int main() {
 	int edge{}; //Size of the game
 	int moveCount{};
 	welcome();
-	// std::cin >> edge; //Input length of edge
-	edge = 4;
-
+	std::cin >> edge; //Input length of edge
 	int ord{};
 	int c = 1;
 	Board board(edge,window,color); //Game starts
@@ -27,7 +25,6 @@ int main() {
 		if (moveCount != 2*(edge * edge - edge)) {			//Sentinel to end the game
 			switch(c) {
 				case 1:
-					std::cout << "case1";
 					board.LineSelect();
 					ord = 0;
 					board.detect_box(ord);
@@ -41,7 +38,6 @@ int main() {
 						break;
 					}
 				case 2:
-					std::cout << "case2"	;
 					board.getBot();
 					ord = 1;
 					board.detect_box(ord);
@@ -69,9 +65,7 @@ int main() {
 		while (window.pollEvent(event)) {
 			if (event.type == Event::Closed)
 				window.close();
-				std::cout << "in poll" << std::endl;
 		}
-		std::cout << "endnig" << std::endl;
 		window.clear(color);
 		board.Draw(window);
 		window.display();
